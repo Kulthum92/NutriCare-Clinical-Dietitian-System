@@ -1,5 +1,8 @@
+
 const form = document.getElementById("appointmentForm");
 const response = document.getElementById("response");
+
+const API_URL = "https://nutricare-clinical-dietitian-system.onrender.com";
 
 form.addEventListener("submit", async function(event) {
     event.preventDefault();
@@ -12,8 +15,11 @@ form.addEventListener("submit", async function(event) {
         message: form.elements["message"].value
     };
 
+    response.textContent = "Submitting your appointment...";
+    response.style.color = "blue";
+
     try {
-        const result = await fetch("/api/appointments", {
+        const result = await fetch(`${API_URL}/api/appointments`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -24,11 +30,12 @@ form.addEventListener("submit", async function(event) {
         const data = await result.json();
 
         if (!result.ok) {
-            throw new Error(data.message);
+            throw new Error(data.message || "Failed to submit appointment.");
         }
 
         response.textContent = data.message;
         response.style.color = "green";
+
         form.reset();
 
     } catch (error) {
